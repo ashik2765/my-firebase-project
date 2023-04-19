@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import app from '../firebase/firebase.config';
 
 const auth = getAuth(app);
 
 const Register = () => {
+    const [error,setError] = useState()
+    const [success, setSuccess] = useState()
     const handleSubmit=(event)=>{
+        setSuccess('')
         event.preventDefault();
         const email = event.target.email.value;
         const password = event.target.password.value;
@@ -14,9 +17,14 @@ const Register = () => {
         .then(result=>{
             const loggedUser = result.user;
             console.log(loggedUser)
+            setError('')
+            event.target.reset();
+            setSuccess('User has created successfully')
         })
         .catch(error =>{
             console.log(error.message)
+            setError(error.message)
+            
         })
     }
 
@@ -34,6 +42,8 @@ const Register = () => {
                 <br />
                 <input className='w-50 mb-4 rounded ps-2' onBlur={handleOnBlur} type="password" name="password" id="password" placeholder='Enter Your Password' required/>
                 <br />
+                <p className='text-danger'>{error}</p>
+                <p className='text-success'>{success}</p>
                 <input className='btn btn-primary'  type="submit" value="Register" />
             </form>
         </div>
